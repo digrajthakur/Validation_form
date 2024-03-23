@@ -4,29 +4,42 @@
   document.getElementById("userForm").addEventListener("submit", function(event) {
     event.preventDefault();
     const form = document.getElementById("userForm");
-    if (form.checkValidity()) {
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const gender = document.getElementById("gender").value;
-      const role = document.getElementById("role").value;
-      const permissions = [];
-      if (document.getElementById("add").checked) {
-        permissions.push("Add");
-      }
-      if (document.getElementById("edit").checked) {
-        permissions.push("Edit");
-      }
-      if (document.getElementById("delete").checked) {
-        permissions.push("Delete");
-      }
-      entries.push({ name, email, gender, role, permissions });
-      displayEntries();
-      form.reset();
-      document.getElementById("error").innerText = "";
-    } else {
-      document.getElementById("error").innerText = "Please fill out all fields correctly.";
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+
+    if (!isValidEmail(email) || !isValidName(name)) {
+      document.getElementById("error").innerText = "Please enter a valid name and email.";
+      return;
     }
+
+    const gender = document.getElementById("gender").value;
+    const role = document.getElementById("role").value;
+    const permissions = [];
+    if (document.getElementById("add").checked) {
+      permissions.push("Add");
+    }
+    if (document.getElementById("edit").checked) {
+      permissions.push("Edit");
+    }
+    if (document.getElementById("delete").checked) {
+      permissions.push("Delete");
+    }
+    entries.push({ name, email, gender, role, permissions });
+    displayEntries();
+    form.reset();
+    document.getElementById("error").innerText = "";
   });
+
+  function isValidEmail(email) {
+    // Basic email validation
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  }
+
+  function isValidName(name) {
+    // Basic name validation (at least 2 characters)
+    return name.length >= 2;
+  }
 
   function displayEntries() {
     const table = document.getElementById("dataTable");
@@ -46,3 +59,4 @@
       row.insertCell(4).innerText = entry.permissions.join(", ");
     });
   }
+
